@@ -1,0 +1,14 @@
+[Unit]
+Description=GoApi - Address lookup by CEP (ViaCEP/BrasilAPI)
+After=network.target
+
+[Service]
+Type=simple
+User=SEU_USUARIO
+WorkingDirectory=/caminho/para/GoApi
+ExecStart=/caminho/para/GoApi/goapi --server
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
