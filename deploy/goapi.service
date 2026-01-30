@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 Type=simple
-User=root
+User=goapi
 WorkingDirectory=/root/GoApi
 ExecStart=/root/GoApi/cmd/api/main --server
 Restart=on-failure
