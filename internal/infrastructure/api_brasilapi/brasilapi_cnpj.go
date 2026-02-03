@@ -8,26 +8,26 @@ import (
 	"net/http"
 )
 
-// GetCnpjV1 fetches CNPJ data from BrasilAPI by CNPJ number.
+// GetCnpj fetches CNPJ data from BrasilAPI by CNPJ number.
 // Returns the CNPJ data or an error on HTTP or decode failure.
-func GetCnpjV1(cnpj string) (mappers.CnpjV1, error) {
+func GetCnpj(cnpj string) (mappers.Cnpj, error) {
 	url := fmt.Sprintf(BRASILAPI_URL, CNPJ_ENDPOINT, API_VERSION_V1, cnpj)
 	response, err := http.Get(url)
 	if err != nil {
-		return mappers.CnpjV1{}, err
+		return mappers.Cnpj{}, err
 	}
 
 	statusCode := response.StatusCode
 	if statusCode != 200 {
-		return mappers.CnpjV1{}, errors.New(response.Status)
+		return mappers.Cnpj{}, errors.New(response.Status)
 	}
 
 	defer response.Body.Close()
-	var cnpjV1 mappers.CnpjV1
-	err = json.NewDecoder(response.Body).Decode(&cnpjV1)
+	var cnpjData mappers.Cnpj
+	err = json.NewDecoder(response.Body).Decode(&cnpjData)
 	if err != nil {
-		return mappers.CnpjV1{}, err
+		return mappers.Cnpj{}, err
 	}
 
-	return cnpjV1, nil
+	return cnpjData, nil
 }

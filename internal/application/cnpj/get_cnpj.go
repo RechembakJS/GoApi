@@ -9,14 +9,14 @@ import (
 
 // GetCnpj fetches CNPJ data by CNPJ number.
 // Returns the CNPJ data or an error if the API fails.
-func GetCnpj(cnpj string) (mappers.CnpjV1, error) {
+func GetCnpj(cnpj string) (mappers.Cnpj, error) {
 	cnpj = mappers.CleanCnpj(cnpj)
 	if len(cnpj) != 14 {
-		return mappers.CnpjV1{}, errors.New("CNPJ must be 14 digits")
+		return mappers.Cnpj{}, errors.New("CNPJ must be 14 digits")
 	}
-	cnpjData, err := api_brasilapi.GetCnpjV1(cnpj)
+	cnpjData, err := api_brasilapi.GetCnpj(cnpj)
 	if err != nil {
-		return mappers.CnpjV1{}, err
+		return mappers.Cnpj{}, err
 	}
 	return cnpjData, nil
 }

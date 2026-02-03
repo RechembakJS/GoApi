@@ -2,7 +2,7 @@ package mappers
 
 import "strings"
 
-type CnpjV1 struct {
+type Cnpj struct {
 	Uf                          string          `json:"uf"`
 	ZipCode                     string          `json:"cep"`
 	Shareholders                []Shareholder   `json:"qsa"`
