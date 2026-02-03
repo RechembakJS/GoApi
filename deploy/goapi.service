@@ -6,7 +6,7 @@ After=network.target
 Type=simple
 User=goapi
 WorkingDirectory=/root/GoApi
-ExecStart=/root/GoApi/cmd/api/main --server
+ExecStart=/root/GoApi/deploy/main --server
 Restart=on-failure
 RestartSec=5
 

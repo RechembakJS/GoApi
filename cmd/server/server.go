@@ -3,6 +3,7 @@ package server
 
 import (
 	"GoApi/internal/application/address"
+	cnpjApplication "GoApi/internal/application/cnpj"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -16,13 +17,15 @@ func RunServer() {
 	mux.HandleFunc("GET /zipcode", handleZipcodeRequired)
 	mux.HandleFunc("GET /zipcode/", handleZipcodeRequired)
 	mux.HandleFunc("GET /zipcode/{zipcode}", handleGetAddress)
+	mux.HandleFunc("GET /cnpj", handleCnpjRequired)
+	mux.HandleFunc("GET /cnpj/{cnpj...}", handleGetCnpj)
 	log.Println("Server listening on :8080")
 	log.Fatal(http.ListenAndServe(":8080", mux))
 }
 
 // handleRoot handles GET /. Returns 400 with usage message (path must be /zipcode/{zipcode}).
 func handleRoot(w http.ResponseWriter, r *http.Request) {
-	http.Error(w, "Use GET /zipcode/{zipcode}, e.g. /zipcode/01001000", http.StatusBadRequest)
+	http.Error(w, "Use GET /zipcode/{zipcode} or GET /cnpj/{cnpj}", http.StatusBadRequest)
 }
 
 // handleZipcodeRequired handles GET /zipcode and GET /zipcode/ (missing ZIPCODE). Returns 400.
@@ -45,4 +48,26 @@ func handleGetAddress(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(addr)
+}
+
+// handleCnpjRequired handles GET /cnpj and GET /cnpj/ (missing CNPJ). Returns 400.
+func handleCnpjRequired(w http.ResponseWriter, r *http.Request) {
+	http.Error(w, "CNPJ required", http.StatusBadRequest)
+}
+
+// handleGetCnpj handles GET /cnpj/{cnpj}. It looks up the CNPJ and returns JSON.
+// Responds with 400 if CNPJ is missing, 404 if not found, and 200 with the CNPJ on success.
+func handleGetCnpj(w http.ResponseWriter, r *http.Request) {
+	cnpj := r.PathValue("cnpj")
+	if cnpj == "" {
+		http.Error(w, "CNPJ required", http.StatusBadRequest)
+		return
+	}
+	cnpjData, err := cnpjApplication.GetCnpj(cnpj)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(cnpjData)
 }
